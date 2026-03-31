@@ -1,0 +1,39 @@
+<?xml version="1.0"?>
+<package format="2">
+  <name>vtr_map_manager</name>
+  <version>1.0.0</version>
+  <description>
+    Phase 2 of the Visual Teach-and-Repeat navigation system.
+    Implements the topo-metric graph map representation, DBoW2-based
+    loop detection, keyframe clustering, and live map expansion as
+    described in Wang et al., arXiv:2510.09089v1, 2025.
+  </description>
+
+  <maintainer email="your@email.com">Your Name</maintainer>
+  <license>MIT</license>
+
+  <!-- Build tools -->
+  <buildtool_depend>catkin</buildtool_depend>
+
+  <!-- Build and run dependencies -->
+  <depend>roscpp</depend>
+  <depend>rospy</depend>
+  <depend>std_msgs</depend>
+  <depend>sensor_msgs</depend>
+  <depend>geometry_msgs</depend>
+  <depend>nav_msgs</depend>
+  <depend>cv_bridge</depend>
+  <depend>image_transport</depend>
+  <depend>tf</depend>
+  <depend>tf2</depend>
+  <depend>tf2_ros</depend>
+  <depend>tf2_geometry_msgs</depend>
+  <depend>visualization_msgs</depend>
+  <depend>message_generation</depend>
+  <depend>message_runtime</depend>
+
+  <!-- System dependencies (installed via apt or from source) -->
+  <depend>libopencv-dev</depend>
+  <depend>libeigen3-dev</depend>
+  <depend>libboost-all-dev</depend>
+</package>

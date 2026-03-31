@@ -1,0 +1,62 @@
+# config/vtr_map_manager_params.yaml
+# Default parameters for vtr_map_manager Phase 2.
+# Load with: rosparam load vtr_map_manager_params.yaml
+
+# -----------------------------------------------------------------------
+# DBoW2 / Loop Detection
+# -----------------------------------------------------------------------
+# Path to pre-trained BRIEF vocabulary.
+# Download: see README.md -> "Vocabulary" section.
+vocabulary_path: "/opt/vtr/vocab/brief_k10L6.voc.gz"
+
+# DBoW2 score threshold for TEACHING phase loop detection (tau_bow)
+# Paper: section III-B-2.  Guide: tau_bow = 0.015
+dbow_score_threshold_teaching: 0.015
+
+# DBoW2 score threshold for REPEATING phase query (tau_ret)
+# Guide: tau_ret = 0.012
+dbow_score_threshold_repeating: 0.012
+
+# Minimum keyframe index gap for loop candidate acceptance (avoid adjacent)
+# Guide: temporal_gap = 30 keyframes
+temporal_gap: 30
+
+# -----------------------------------------------------------------------
+# Keyframe Clustering (offline, after teaching)
+# -----------------------------------------------------------------------
+# DBoW2 similarity threshold to trigger cluster merging (tau_cluster)
+# Guide: tau_cluster = 0.05
+dbow_cluster_threshold: 0.05
+
+# Minimum features retained per enhanced node after clustering
+min_features_per_node: 200
+
+# Maximum features per enhanced node (bounds PnP cost)
+max_features_per_node: 800
+
+# Grid filter dimensions (prevents degenerate PnP feature distributions)
+# Guide: 8 x 6 grid, at most 5 features per cell
+grid_cols: 8
+grid_rows: 6
+max_per_cell: 5
+
+# -----------------------------------------------------------------------
+# Camera / Image
+# -----------------------------------------------------------------------
+image_width:  640
+image_height: 480
+
+# -----------------------------------------------------------------------
+# Map Storage
+# -----------------------------------------------------------------------
+# Directory where the map graph and DBoW2 database are saved/loaded
+map_dir: "$(env HOME)/vtr_maps/current"
+
+# -----------------------------------------------------------------------
+# Visualizer
+# -----------------------------------------------------------------------
+# ROS TF frame for the map markers
+visualizer_frame_id: "odom"
+
+# Rate at which the marker array is re-published (Hz)
+visualizer_publish_rate: 2.0

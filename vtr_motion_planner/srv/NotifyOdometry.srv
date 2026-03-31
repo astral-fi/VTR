@@ -1,0 +1,6 @@
+# NotifyOdometry.srv
+# Push the latest odometry pose to Phase 3 so it can update goal positions
+# between successful relocalization events.
+geometry_msgs/Pose current_pose
+---
+bool success

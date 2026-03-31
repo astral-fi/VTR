@@ -1,0 +1,47 @@
+<launch>
+  <!-- ============================================================
+       Phase 1: Visual Odometry and Perception Engine
+       ROS Melodic compatible
+  ============================================================ -->
+
+  <arg name="left_topic"   default="/camera/left/image_raw"/>
+  <arg name="right_topic"  default="/camera/right/image_raw"/>
+  <arg name="imu_topic"    default="/imu/data"/>
+  <arg name="use_sim_time" default="false"/>
+
+  <param name="/use_sim_time" value="$(arg use_sim_time)"/>
+
+  <!-- ============================================================
+       OpenVINS node (separate package, launched here for convenience)
+  ============================================================ -->
+  <include file="$(find ov_msckf)/launch/subscribe.launch">
+    <arg name="config" value="$(find ov_msckf)/config/euroc_mav.yaml"/>
+    <arg name="max_cameras"     value="2"/>
+    <arg name="use_stereo"      value="true"/>
+  </include>
+
+  <!-- ============================================================
+       Phase 1 Perception Node
+  ============================================================ -->
+  <node name="vtr_phase1_perception"
+        pkg="vtr_phase1_perception"
+        type="perception_node"
+        output="screen"
+        required="true">
+
+    <rosparam file="$(find vtr_phase1_perception)/config/phase1_params.yaml"
+              command="load"/>
+
+    <!-- Remap to your actual camera topics -->
+    <remap from="/camera/left/image_raw"  to="$(arg left_topic)"/>
+    <remap from="/camera/right/image_raw" to="$(arg right_topic)"/>
+  </node>
+
+  <!-- ============================================================
+       Optional: rqt_image_view for debugging
+  ============================================================ -->
+  <!-- <node pkg="rqt_image_view" type="rqt_image_view"
+              name="image_view" output="screen"/> -->
+
+</launch>
+

@@ -1,0 +1,71 @@
+# =============================================================================
+# map_manager_params.yaml
+# Default parameters for vtr_map_manager Phase 2 nodes.
+# Override individual values on the command line or in your launch file.
+# =============================================================================
+
+map_manager_node:
+
+  # --------------------------------------------------------------------------
+  # Operating mode: "teaching" or "repeating"
+  # --------------------------------------------------------------------------
+  mode: "teaching"
+
+  # --------------------------------------------------------------------------
+  # DBoW2 vocabulary
+  # Download from: https://github.com/dorian3d/DBoW2
+  # Or use the BRIEF vocabulary bundled with ORB-SLAM2:
+  #   https://github.com/raulmur/ORB_SLAM2/tree/master/Vocabulary
+  # --------------------------------------------------------------------------
+  vocabulary_path: "/opt/vtr/vocab/brief_k10L6.voc.gz"
+
+  # --------------------------------------------------------------------------
+  # Map storage path (used by map_save_load_node)
+  # --------------------------------------------------------------------------
+  map_save_path: "/tmp/vtr_map"
+
+  # --------------------------------------------------------------------------
+  # Loop detection (teaching phase)
+  # --------------------------------------------------------------------------
+  # Reject DBoW candidates within this many temporally adjacent nodes
+  temporal_gap: 30
+
+  # Minimum DBoW score to accept a loop candidate (tau_bow, paper Sec III-B-2)
+  dbow_score_threshold_teaching: 0.015
+
+  # --------------------------------------------------------------------------
+  # Loop detection (repeating phase)
+  # --------------------------------------------------------------------------
+  # Minimum DBoW score for live frame query (tau_ret, implementation guide)
+  dbow_score_threshold_repeating: 0.012
+
+  # Number of top candidates to return per live query
+  dbow_top_n_candidates: 5
+
+  # --------------------------------------------------------------------------
+  # Keyframe clustering (map redundancy reduction)
+  # --------------------------------------------------------------------------
+  # Similarity threshold to merge adjacent keyframes (tau_cluster)
+  dbow_cluster_threshold: 0.05
+
+  # Feature count bounds after merging
+  min_features_per_node: 200
+  max_features_per_node: 800
+
+  # Grid filter dimensions (prevents degenerate PnP from clustered features)
+  grid_filter_cols: 8
+  grid_filter_rows: 6
+  grid_filter_max_per_cell: 5
+
+  # --------------------------------------------------------------------------
+  # Camera intrinsics (needed for occupancy grid projection in Phase 4;
+  # also used for grid filter cell sizing)
+  # --------------------------------------------------------------------------
+  image_width:  640
+  image_height: 480
+
+  # --------------------------------------------------------------------------
+  # Map expansion (repeating phase)
+  # --------------------------------------------------------------------------
+  # Maximum number of expansion frames to search when finding nearest node
+  expansion_search_hops: 50

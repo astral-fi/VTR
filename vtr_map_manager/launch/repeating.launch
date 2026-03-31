@@ -1,0 +1,71 @@
+<!--
+  repeating.launch
+  Load the saved reduced map and start Phase 2 in REPEATING mode.
+
+  Step 1 — load the map (publishes all MapNode messages, then stays alive):
+    map_save_load_node  op:=load
+
+  Step 2 — run map manager (subscribes to Phase 3 query frames):
+    map_manager_node    mode:=repeating
+
+  Phase 1 (visual odometry) and Phase 3 (relocalization) must also be running.
+
+  Usage:
+    roslaunch vtr_map_manager repeating.launch \
+      map_path:=$HOME/vtr_maps/teaching_map_01
+-->
+<launch>
+  <!-- ================================================================ -->
+  <!-- Arguments                                                         -->
+  <!-- ================================================================ -->
+  <arg name="map_path"
+       default="$(env HOME)/vtr_maps/map_01"
+       doc="Path to the saved map directory (must contain map.bin)." />
+
+  <arg name="vocabulary_path"
+       default="/opt/vtr/vocab/brief_k10L6.voc.gz" />
+
+  <arg name="image_width"   default="640" />
+  <arg name="image_height"  default="480" />
+
+  <!-- ================================================================ -->
+  <!-- 1. map_save_load_node — loads map and publishes all MapNode msgs  -->
+  <!-- ================================================================ -->
+  <node name="map_save_load_node"
+        pkg="vtr_map_manager"
+        type="map_save_load_node"
+        output="screen"
+        respawn="false">
+    <param name="op"              value="load" />
+    <param name="map_path"        value="$(arg map_path)" />
+    <param name="vocabulary_path" value="$(arg vocabulary_path)" />
+  </node>
+
+  <!-- ================================================================ -->
+  <!-- 2. map_manager_node — handles live queries and map expansion      -->
+  <!-- ================================================================ -->
+  <node name="map_manager_node"
+        pkg="vtr_map_manager"
+        type="map_manager_node"
+        output="screen"
+        respawn="false"
+        launch-prefix="bash -c 'sleep 2 &amp;&amp; exec $0 $@' ">
+    <!-- Delayed start: waits 2 s for map_save_load_node to publish all nodes -->
+
+    <param name="mode"            value="repeating" />
+    <param name="vocabulary_path" value="$(arg vocabulary_path)" />
+    <param name="map_save_path"   value="$(arg map_path)" />
+    <param name="image_width"     value="$(arg image_width)" />
+    <param name="image_height"    value="$(arg image_height)" />
+  </node>
+
+  <!-- ================================================================ -->
+  <!-- 3. map_visualizer_node — publishes RViz markers                   -->
+  <!-- ================================================================ -->
+  <node name="map_visualizer_node"
+        pkg="vtr_map_manager"
+        type="map_visualizer_node"
+        output="screen"
+        respawn="false" />
+
+</launch>

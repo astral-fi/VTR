@@ -1,0 +1,71 @@
+<!-- vtr_relocalization/launch/relocalization.launch
+     Launch file for VTR Phase 3: Relocalization & Goal List Management
+     Compatible with ROS Melodic.
+
+     Required args:
+       vocabulary_path  — absolute path to DBoW2 BRIEF vocabulary file (.voc.gz)
+       map_path         — absolute path to Phase 2 serialised map file
+-->
+<launch>
+
+  <!-- ── Arguments ──────────────────────────────────────────────────────── -->
+  <arg name="vocabulary_path"    default="$(find vtr_relocalization)/config/brief_k10L6.voc.gz"/>
+  <arg name="map_path"           default=""/>
+  <arg name="camera_topic"       default="/camera/image_raw"/>
+  <arg name="odometry_topic"     default="/vtr/odometry"/>
+
+  <!-- Camera intrinsics (EuRoC MAV defaults; replace for your sensor) -->
+  <arg name="camera_fx"          default="458.654"/>
+  <arg name="camera_fy"          default="457.296"/>
+  <arg name="camera_cx"          default="367.215"/>
+  <arg name="camera_cy"          default="248.375"/>
+  <arg name="image_width"        default="752"/>
+  <arg name="image_height"       default="480"/>
+
+  <!-- Relocalization parameters -->
+  <arg name="tau_ret"            default="0.012"/>
+  <arg name="search_radius"      default="40"/>
+  <arg name="hamming_thresh"     default="60"/>
+  <arg name="pnp_max_reproj_err" default="2.5"/>
+  <arg name="pnp_min_inliers"    default="12"/>
+  <arg name="pnp_max_iter"       default="20"/>
+
+  <!-- Goal list parameters -->
+  <arg name="goal_list_length"   default="5"/>
+  <arg name="goal_arrival_dist"  default="0.4"/>
+  <arg name="goal_angle_limit"   default="60.0"/>
+
+  <!-- ── Node ───────────────────────────────────────────────────────────── -->
+  <node name="vtr_relocalization_node"
+        pkg="vtr_relocalization"
+        type="vtr_relocalization_node"
+        output="screen">
+
+    <!-- Remap topics to args -->
+    <remap from="/camera/image_raw" to="$(arg camera_topic)"/>
+    <remap from="/vtr/odometry"     to="$(arg odometry_topic)"/>
+
+    <!-- Parameters -->
+    <param name="vocabulary_path"    value="$(arg vocabulary_path)"/>
+    <param name="map_path"           value="$(arg map_path)"/>
+
+    <param name="camera_fx"          value="$(arg camera_fx)"/>
+    <param name="camera_fy"          value="$(arg camera_fy)"/>
+    <param name="camera_cx"          value="$(arg camera_cx)"/>
+    <param name="camera_cy"          value="$(arg camera_cy)"/>
+    <param name="image_width"        value="$(arg image_width)"/>
+    <param name="image_height"       value="$(arg image_height)"/>
+
+    <param name="tau_ret"            value="$(arg tau_ret)"/>
+    <param name="search_radius"      value="$(arg search_radius)"/>
+    <param name="hamming_thresh"     value="$(arg hamming_thresh)"/>
+    <param name="pnp_max_reproj_err" value="$(arg pnp_max_reproj_err)"/>
+    <param name="pnp_min_inliers"    value="$(arg pnp_min_inliers)"/>
+    <param name="pnp_max_iter"       value="$(arg pnp_max_iter)"/>
+
+    <param name="goal_list_length"   value="$(arg goal_list_length)"/>
+    <param name="goal_arrival_dist"  value="$(arg goal_arrival_dist)"/>
+    <param name="goal_angle_limit"   value="$(arg goal_angle_limit)"/>
+  </node>
+
+</launch>

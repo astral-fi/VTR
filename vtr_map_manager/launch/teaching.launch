@@ -1,0 +1,70 @@
+<!--
+  teaching.launch
+  Start Phase 2 map management in TEACHING mode.
+
+  Phase 1 (visual odometry) must already be running and publishing:
+    /vtr/keyframe  (vtr_map_manager/Keyframe)
+
+  Usage:
+    roslaunch vtr_map_manager teaching.launch
+    roslaunch vtr_map_manager teaching.launch vocabulary_path:=/path/to/vocab.voc.gz
+
+  When teaching is complete:
+    rosservice call /vtr/run_clustering "{}"
+    rosservice call /vtr/save_map "{}"
+-->
+<launch>
+  <!-- ================================================================ -->
+  <!-- Arguments                                                         -->
+  <!-- ================================================================ -->
+  <arg name="vocabulary_path"
+       default="/opt/vtr/vocab/brief_k10L6.voc.gz"
+       doc="Path to the pre-trained BRIEF DBoW2 vocabulary file." />
+
+  <arg name="map_save_path"
+       default="$(env HOME)/vtr_maps/teaching_$(arg map_name)"
+       doc="Directory where the map is saved after clustering." />
+
+  <arg name="map_name"
+       default="map_01"
+       doc="Human-readable tag used to name the save directory." />
+
+  <arg name="temporal_gap"
+       default="30"
+       doc="Reject DBoW loop candidates within this many recent nodes." />
+
+  <arg name="image_width"   default="640" />
+  <arg name="image_height"  default="480" />
+
+  <arg name="dbow_cluster_threshold"
+       default="0.05"
+       doc="DBoW2 similarity threshold for keyframe clustering (tau_cluster)." />
+
+  <!-- ================================================================ -->
+  <!-- map_manager_node (teaching mode)                                  -->
+  <!-- ================================================================ -->
+  <node name="map_manager_node"
+        pkg="vtr_map_manager"
+        type="map_manager_node"
+        output="screen"
+        respawn="false">
+
+    <param name="mode"                    value="teaching" />
+    <param name="vocabulary_path"         value="$(arg vocabulary_path)" />
+    <param name="map_save_path"           value="$(arg map_save_path)" />
+    <param name="temporal_gap"            value="$(arg temporal_gap)" />
+    <param name="image_width"             value="$(arg image_width)" />
+    <param name="image_height"            value="$(arg image_height)" />
+    <param name="dbow_cluster_threshold"  value="$(arg dbow_cluster_threshold)" />
+  </node>
+
+  <!-- ================================================================ -->
+  <!-- map_visualizer_node — optional RViz feedback during teaching      -->
+  <!-- ================================================================ -->
+  <node name="map_visualizer_node"
+        pkg="vtr_map_manager"
+        type="map_visualizer_node"
+        output="screen"
+        respawn="false" />
+
+</launch>

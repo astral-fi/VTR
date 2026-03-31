@@ -1,0 +1,66 @@
+# planner_params.yaml
+# -----------------------------------------------------------------------
+# VTR Phase 4 – Motion Planner Parameter File
+# All values here match the defaults from the implementation guide.
+# Override per-robot by editing this file or passing args to the launch file.
+# -----------------------------------------------------------------------
+
+# -----------------------------------------------------------------------
+# ROS topic names
+# -----------------------------------------------------------------------
+scan_topic:      "/scan"          # sensor_msgs/LaserScan – 2D LiDAR input
+cmd_vel_topic:   "/cmd_vel"       # geometry_msgs/Twist – velocity commands out
+odom_topic:      "/odom"          # nav_msgs/Odometry – for goal frame updates
+goal_list_topic: "/vtr/goal_list" # vtr_motion_planner/GoalList – from Phase 3
+
+# -----------------------------------------------------------------------
+# Control loop
+# -----------------------------------------------------------------------
+control_rate_hz: 10.0       # Hz – must match laser scan rate (spec: 10 Hz)
+
+# Distance threshold below which direct steering replaces arc selection (m)
+close_range_threshold: 0.5
+
+# Angular velocity used when all trajectories are blocked (rad/s)
+# Robot rotates in place to find a new feasible direction.
+safety_rotate_omega: 0.3
+
+# -----------------------------------------------------------------------
+# Trajectory candidate library  (pre-cached at startup)
+# -----------------------------------------------------------------------
+num_trajectory_candidates: 21     # K – odd number recommended (centre = straight)
+forward_velocity: 0.3             # m/s – fixed linear speed during arc selection
+
+# Angular velocity sweep bounds (rad/s)
+omega_min: -0.6
+omega_max:  0.6
+
+# Arc horizon and time step
+horizon_sec: 1.0    # seconds of lookahead per arc
+dt_sec:      0.1    # integration step (seconds)
+
+# -----------------------------------------------------------------------
+# 2D Occupancy Grid
+# -----------------------------------------------------------------------
+# Grid is a square centred on the robot.
+grid_width_m:       6.0    # physical size of grid (m) – 6 m × 6 m
+grid_resolution_m:  0.05   # cell size (m) → 120 × 120 grid
+inflation_radius_m: 0.25   # robot_radius + safety_margin (m)
+
+# -----------------------------------------------------------------------
+# Goal list management  (mirrors GoalListManager::Params)
+# -----------------------------------------------------------------------
+# Erase goal when robot comes within this distance (m)
+arrival_threshold_m: 0.4
+
+# Erase goal when its bearing from the robot exceeds ±this angle (deg)
+angle_limit_deg: 60.0
+
+# Maximum number of goals to keep in the list
+max_goals: 5
+
+# -----------------------------------------------------------------------
+# Scoring function
+# -----------------------------------------------------------------------
+# Number of goals used in the scoring sum (spec: first 3)
+goals_to_use: 3

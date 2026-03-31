@@ -1,0 +1,79 @@
+<!-- launch/vtr_teaching.launch -->
+<!-- Launch the full Phase 2 stack in TEACHING mode. -->
+<!-- Run this during the human-guided teaching phase. -->
+<!-- Usage: roslaunch vtr_map_manager vtr_teaching.launch -->
+
+<launch>
+  <!-- ======================================================= -->
+  <!-- Arguments                                               -->
+  <!-- ======================================================= -->
+  <arg name="vocabulary_path"
+       default="/opt/vtr/vocab/brief_k10L6.voc.gz"
+       doc="Path to the pre-trained BRIEF DBoW2 vocabulary file" />
+
+  <arg name="map_dir"
+       default="$(env HOME)/vtr_maps/current"
+       doc="Directory where the map will be saved after teaching" />
+
+  <arg name="image_width"  default="640" />
+  <arg name="image_height" default="480" />
+
+  <arg name="dbow_cluster_threshold" default="0.05"
+       doc="Similarity threshold for keyframe clustering (tau_cluster)" />
+
+  <arg name="temporal_gap" default="30"
+       doc="Minimum keyframe index gap to accept a loop candidate" />
+
+  <!-- ======================================================= -->
+  <!-- Phase 2: Map Manager (teaching mode)                    -->
+  <!-- ======================================================= -->
+  <node name="map_manager_node"
+        pkg="vtr_map_manager"
+        type="map_manager_node"
+        output="screen"
+        required="true">
+
+    <param name="mode"                     value="teaching" />
+    <param name="vocabulary_path"          value="$(arg vocabulary_path)" />
+    <param name="map_dir"                  value="$(arg map_dir)" />
+    <param name="image_width"              value="$(arg image_width)" />
+    <param name="image_height"             value="$(arg image_height)" />
+    <param name="dbow_cluster_threshold"   value="$(arg dbow_cluster_threshold)" />
+    <param name="temporal_gap"             value="$(arg temporal_gap)" />
+  </node>
+
+  <!-- ======================================================= -->
+  <!-- Phase 2: Map Save/Load node                             -->
+  <!-- ======================================================= -->
+  <node name="map_save_load_node"
+        pkg="vtr_map_manager"
+        type="map_save_load_node"
+        output="screen">
+
+    <param name="map_dir"          value="$(arg map_dir)" />
+    <param name="vocabulary_path"  value="$(arg vocabulary_path)" />
+  </node>
+
+  <!-- ======================================================= -->
+  <!-- Phase 2: RViz Map Visualizer                            -->
+  <!-- ======================================================= -->
+  <node name="map_visualizer_node"
+        pkg="vtr_map_manager"
+        type="map_visualizer_node"
+        output="screen">
+
+    <param name="frame_id"      value="odom" />
+    <param name="publish_rate"  value="2.0" />
+  </node>
+
+  <!-- ======================================================= -->
+  <!-- RViz (optional — comment out if running headless)       -->
+  <!-- ======================================================= -->
+  <node name="rviz"
+        pkg="rviz"
+        type="rviz"
+        args="-d $(find vtr_map_manager)/config/vtr_map.rviz"
+        output="screen"
+        if="false" />
+
+</launch>

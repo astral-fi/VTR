@@ -1,0 +1,68 @@
+<!-- vtr_motion_planner.launch -->
+<!-- Launch the VTR Phase 4 Motion Planner node with configurable parameters. -->
+<!-- All parameters correspond directly to the Config struct in motion_controller.h -->
+
+<launch>
+  <!-- ================================================================ -->
+  <!-- Arguments – override at the command line with:                   -->
+  <!--   roslaunch vtr_motion_planner vtr_motion_planner.launch         -->
+  <!--             scan_topic:=/my_scan forward_velocity:=0.4           -->
+  <!-- ================================================================ -->
+
+  <!-- Topic remappings -->
+  <arg name="scan_topic"        default="/scan"/>
+  <arg name="cmd_vel_topic"     default="/cmd_vel"/>
+  <arg name="odom_topic"        default="/odom"/>
+  <arg name="goal_list_topic"   default="/vtr/goal_list"/>
+
+  <!-- Control parameters -->
+  <arg name="control_rate_hz"         default="10.0"/>
+  <arg name="close_range_threshold"   default="0.5"/>
+  <arg name="safety_rotate_omega"     default="0.3"/>
+
+  <!-- Trajectory generation -->
+  <arg name="num_trajectory_candidates" default="21"/>
+  <arg name="forward_velocity"          default="0.3"/>
+
+  <!-- Occupancy grid -->
+  <arg name="grid_width_m"        default="6.0"/>
+  <arg name="grid_resolution_m"   default="0.05"/>
+  <arg name="inflation_radius_m"  default="0.25"/>
+
+  <!-- Optional: use a custom parameter file -->
+  <arg name="config_file" default="$(find vtr_motion_planner)/config/planner_params.yaml"/>
+
+  <!-- ================================================================ -->
+  <!-- Node                                                              -->
+  <!-- ================================================================ -->
+  <node name="vtr_motion_planner"
+        pkg="vtr_motion_planner"
+        type="motion_planner_node"
+        output="screen"
+        required="true">
+
+    <!-- Load parameter file first (values can be overridden by args below) -->
+    <rosparam command="load" file="$(arg config_file)"/>
+
+    <!-- Topic names -->
+    <param name="scan_topic"      value="$(arg scan_topic)"/>
+    <param name="cmd_vel_topic"   value="$(arg cmd_vel_topic)"/>
+    <param name="odom_topic"      value="$(arg odom_topic)"/>
+    <param name="goal_list_topic" value="$(arg goal_list_topic)"/>
+
+    <!-- Control -->
+    <param name="control_rate_hz"       value="$(arg control_rate_hz)"/>
+    <param name="close_range_threshold" value="$(arg close_range_threshold)"/>
+    <param name="safety_rotate_omega"   value="$(arg safety_rotate_omega)"/>
+
+    <!-- Trajectories -->
+    <param name="num_trajectory_candidates" value="$(arg num_trajectory_candidates)"/>
+    <param name="forward_velocity"          value="$(arg forward_velocity)"/>
+
+    <!-- Grid -->
+    <param name="grid_width_m"       value="$(arg grid_width_m)"/>
+    <param name="grid_resolution_m"  value="$(arg grid_resolution_m)"/>
+    <param name="inflation_radius_m" value="$(arg inflation_radius_m)"/>
+
+  </node>
+</launch>

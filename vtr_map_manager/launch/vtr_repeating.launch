@@ -1,0 +1,63 @@
+<!-- launch/vtr_repeating.launch -->
+<!-- Launch the full Phase 2 stack in REPEATING mode. -->
+<!-- Run this after teaching is complete and the map has been saved. -->
+<!-- Usage: roslaunch vtr_map_manager vtr_repeating.launch -->
+
+<launch>
+  <arg name="vocabulary_path"
+       default="/opt/vtr/vocab/brief_k10L6.voc.gz" />
+
+  <arg name="map_dir"
+       default="$(env HOME)/vtr_maps/current" />
+
+  <arg name="image_width"  default="640" />
+  <arg name="image_height" default="480" />
+
+  <!-- ======================================================= -->
+  <!-- Phase 2: Map Manager (repeating mode)                   -->
+  <!-- ======================================================= -->
+  <node name="map_manager_node"
+        pkg="vtr_map_manager"
+        type="map_manager_node"
+        output="screen"
+        required="true">
+
+    <param name="mode"             value="repeating" />
+    <param name="vocabulary_path"  value="$(arg vocabulary_path)" />
+    <param name="map_dir"          value="$(arg map_dir)" />
+    <param name="image_width"      value="$(arg image_width)" />
+    <param name="image_height"     value="$(arg image_height)" />
+  </node>
+
+  <!-- ======================================================= -->
+  <!-- Load the saved map at startup                           -->
+  <!-- ======================================================= -->
+  <node name="map_save_load_node"
+        pkg="vtr_map_manager"
+        type="map_save_load_node"
+        output="screen">
+
+    <param name="map_dir"          value="$(arg map_dir)" />
+    <param name="vocabulary_path"  value="$(arg vocabulary_path)" />
+  </node>
+
+  <!-- Auto-load map 3 seconds after start -->
+  <node name="auto_load_map"
+        pkg="rosservice"
+        type="rosservice"
+        args="call --wait /vtr/load_map_full '{}'"
+        launch-prefix="bash -c 'sleep 3 &amp;&amp; $0 $@'" />
+
+  <!-- ======================================================= -->
+  <!-- Phase 2: RViz Map Visualizer                            -->
+  <!-- ======================================================= -->
+  <node name="map_visualizer_node"
+        pkg="vtr_map_manager"
+        type="map_visualizer_node"
+        output="screen">
+
+    <param name="frame_id"      value="odom" />
+    <param name="publish_rate"  value="2.0" />
+  </node>
+
+</launch>

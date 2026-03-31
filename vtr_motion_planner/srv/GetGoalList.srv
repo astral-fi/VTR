@@ -1,0 +1,7 @@
+# GetGoalList.srv
+# Request the current goal list from Phase 3.
+# Phase 4 calls this each control cycle.
+---
+vtr_motion_planner/GoalList goal_list
+bool success
+string message

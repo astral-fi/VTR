@@ -1,0 +1,41 @@
+<?xml version="1.0"?>
+<package format="2">
+  <name>vtr_motion_planner</name>
+  <version>1.0.0</version>
+  <description>
+    Phase 4 of the Visual Teach-and-Repeat (VTR) navigation system.
+    Implements local motion planning and obstacle avoidance using a
+    pre-cached trajectory library, 2D occupancy grid from LiDAR, and
+    a goal-alignment scoring function fed by Phase 3 goal lists.
+
+    Based on: Wang et al., "Robust Visual Teach-and-Repeat Navigation
+    with Flexible Topo-metric Graph Map Representation", arXiv:2510.09089v1
+  </description>
+
+  <maintainer email="robot@example.com">VTR Team</maintainer>
+  <license>MIT</license>
+
+  <!-- Build tool -->
+  <buildtool_depend>catkin</buildtool_depend>
+
+  <!-- Build + run dependencies -->
+  <depend>roscpp</depend>
+  <depend>std_msgs</depend>
+  <depend>sensor_msgs</depend>
+  <depend>geometry_msgs</depend>
+  <depend>nav_msgs</depend>
+  <depend>laser_geometry</depend>
+  <depend>tf</depend>
+  <depend>tf2</depend>
+  <depend>tf2_ros</depend>
+  <depend>tf2_geometry_msgs</depend>
+
+  <!-- Message generation -->
+  <build_depend>message_generation</build_depend>
+  <exec_depend>message_runtime</exec_depend>
+
+  <!-- System libraries (provided by ROS Melodic desktop-full) -->
+  <depend>libeigen3-dev</depend>
+
+  <export/>
+</package>
