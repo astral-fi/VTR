@@ -339,5 +339,58 @@ private:
     Eigen::Matrix4d             last_kf_pose_ = Eigen::Matrix4d::Identity();
     Sophus::SE3f                last_kf_T_;
 };
-
 } // namespace vtr
+
+#include <vtr_map_manager/Keyframe.h>
+
+int main(int argc, char** argv)
+{
+    ros::init(argc, argv, "phase1_node");
+    ros::NodeHandle nh;
+    ros::NodeHandle nh_priv("~");
+
+    vtr::Phase1Node node(nh, nh_priv);
+
+    ros::Publisher kf_pub = nh.advertise<vtr_map_manager::Keyframe>("/vtr/keyframe", 10);
+
+    node.subscribeKeyframe([&](const vtr::Keyframe& kf) {
+        vtr_map_manager::Keyframe msg;
+        msg.header.stamp = ros::Time(kf.timestamp);
+        msg.header.frame_id = "camera_link";
+
+        for (int i=0; i<16; ++i) msg.T_rel.push_back(kf.T_rel(i/4, i%4));
+
+        for (const auto& kp : kf.features_2d) {
+            msg.features_u.push_back(kp.pt.x);
+            msg.features_v.push_back(kp.pt.y);
+        }
+
+        if (!kf.descriptors.empty()) {
+            for (int i=0; i<kf.descriptors.rows; ++i) {
+                for (int j=0; j<kf.descriptors.cols; ++j) {
+                    msg.features_descriptors.push_back(kf.descriptors.at<uint8_t>(i, j));
+                }
+            }
+        }
+
+        for (const auto& pt3 : kf.features_3d) {
+            msg.features_x.push_back(pt3.x);
+            msg.features_y.push_back(pt3.y);
+            msg.features_z.push_back(pt3.z);
+        }
+
+        for (int idx : kf.feat3d_idx) {
+            msg.feat3d_idx.push_back(idx);
+        }
+
+        for (const auto& w : kf.descriptor) {
+            msg.bow_word_ids.push_back(w.first);
+            msg.bow_word_weights.push_back(w.second);
+        }
+
+        kf_pub.publish(msg);
+    });
+
+    ros::spin();
+    return 0;
+}

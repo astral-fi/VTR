@@ -41,7 +41,7 @@ catkin_package(
     tf2 tf2_ros tf2_geometry_msgs cv_bridge image_transport
     message_filters
   DEPENDS
-    OpenCV Eigen3 DBoW2
+    OpenCV EIGEN3 DBoW2
 )
 
 # ─── Include dirs ────────────────────────────────────────────────────────────

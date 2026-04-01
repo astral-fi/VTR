@@ -11,6 +11,7 @@ find_package(catkin REQUIRED COMPONENTS
   sensor_msgs
   cv_bridge
   message_filters
+  vtr_map_manager
 )
 
 find_package(Eigen3 REQUIRED)
@@ -26,7 +27,7 @@ find_library(SOPHUS_LIB   Sophus    HINTS /usr/local/lib)
 catkin_package(
   INCLUDE_DIRS include
   LIBRARIES vtr_phase1
-  CATKIN_DEPENDS roscpp sensor_msgs cv_bridge
+  CATKIN_DEPENDS roscpp sensor_msgs cv_bridge vtr_map_manager
 )
 
 include_directories(
@@ -53,7 +54,7 @@ target_link_libraries(vtr_phase1
   pthread
 )
 
-add_executable(phase1_node src/main.cpp)
+add_executable(phase1_node src/Phase1Node.cpp)
 target_link_libraries(phase1_node vtr_phase1)
 
 install(TARGETS phase1_node vtr_phase1
