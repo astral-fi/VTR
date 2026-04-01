@@ -1,8 +1,8 @@
 <!-- vtr_phase1.launch -->
 <launch>
-  <node pkg="vtr_perception" type="phase1_node" name="vtr_phase1" output="screen">
+  <node pkg="vtr_perception" type="Phase1Node" name="Phase1Node.cpp" output="screen">
     <param name="orb_vocab"       value="$(env HOME)/ORB_SLAM3/Vocabulary/ORBvoc.txt"/>
-    <param name="orb_settings"    value="$(find vtr_phase1)/config/jetracer_mono_imu.yaml"/>
+    <param name="orb_settings"    value="$(find vtr_perception)/config/MONO_IMU.yaml"/>
     <param name="keyframe_every"  value="5"/>
     <param name="kf_trans_thresh" value="0.3"/>
     <param name="kf_rot_thresh"   value="0.1745"/>
