@@ -22,7 +22,7 @@ find_package(catkin REQUIRED COMPONENTS
 )
 
 # ─── OpenCV (ROS Melodic ships with 3.2 / 3.4) ──────────────────────────────
-find_package(OpenCV 3 REQUIRED)
+find_package(OpenCV REQUIRED)
 
 # ─── Eigen3 ─────────────────────────────────────────────────────────────────
 find_package(Eigen3 REQUIRED)

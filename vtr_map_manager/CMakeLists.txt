@@ -28,7 +28,7 @@ find_package(catkin REQUIRED COMPONENTS
 # ============================================================
 # Find system dependencies
 # ============================================================
-find_package(OpenCV 3 REQUIRED)
+find_package(OpenCV REQUIRED)
 find_package(Eigen3 REQUIRED)
 find_package(Boost REQUIRED COMPONENTS serialization filesystem system)
 

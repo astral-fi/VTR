@@ -14,7 +14,7 @@ find_package(catkin REQUIRED COMPONENTS
 )
 
 find_package(Eigen3 REQUIRED)
-find_package(OpenCV 3.4 REQUIRED)
+find_package(OpenCV REQUIRED)
 
 # ORB-SLAM3 — build separately and point to install dir
 set(ORB_SLAM3_DIR $ENV{HOME}/ORB_SLAM3)
