@@ -25,7 +25,7 @@ using SE3d = Eigen::Matrix4d;
 struct Feature2D {
   float u;           // pixel column
   float v;           // pixel row
-  cv::Mat descriptor;  // 256-bit BRIEF stored as 1×32 CV_8U row
+  cv::Mat descriptor;  // 256-bit ORB stored as 1×32 CV_8U row
 };
 
 // ─── 3D–2D correspondence ────────────────────────────────────────────────────
@@ -99,9 +99,9 @@ struct Phase3Config {
   // --- Coarse retrieval ---
   double tau_ret        = 0.012;  // minimum DBoW score to accept a candidate
 
-  // --- BRIEF window matching ---
+  // --- ORB window matching ---
   int    search_radius  = 40;     // γ: pixel search window radius
-  int    hamming_thresh = 60;     // max Hamming distance for BRIEF match
+  int    hamming_thresh = 60;     // max Hamming distance for ORB match
   int    grid_rows      = 6;      // image grid rows for spatial filter
   int    grid_cols      = 8;      // image grid cols for spatial filter
   int    max_per_cell   = 3;      // max matches per grid cell

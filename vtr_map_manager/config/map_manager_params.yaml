@@ -14,10 +14,10 @@ map_manager_node:
   # --------------------------------------------------------------------------
   # DBoW2 vocabulary
   # Download from: https://github.com/dorian3d/DBoW2
-  # Or use the BRIEF vocabulary bundled with ORB-SLAM2:
+  # Or use the ORB vocabulary bundled with ORB-SLAM2:
   #   https://github.com/raulmur/ORB_SLAM2/tree/master/Vocabulary
   # --------------------------------------------------------------------------
-  vocabulary_path: "/opt/vtr/vocab/brief_k10L6.voc.gz"
+  vocabulary_path: "/opt/vtr/vocab/ORBvoc.txt"
 
   # --------------------------------------------------------------------------
   # Map storage path (used by map_save_load_node)

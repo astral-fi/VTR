@@ -9,7 +9,7 @@
   <!-- ======================================================= -->
   <arg name="vocabulary_path"
        default="~/ORB_SLAM3/Vocabulary/ORBvoc.txt"
-       doc="Path to the pre-trained BRIEF DBoW2 vocabulary file" />
+       doc="Path to the pre-trained ORB DBoW2 vocabulary file" />
 
   <arg name="map_dir"
        default="$(env HOME)/vtr_maps/current"

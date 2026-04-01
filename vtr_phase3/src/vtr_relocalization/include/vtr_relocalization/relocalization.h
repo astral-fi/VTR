@@ -6,7 +6,7 @@
 //
 // For each live frame:
 //   Step 1 — Coarse retrieval:   DBoW2 query against Phase 2 map API.
-//   Step 2 — BRIEF window match: per-feature search in γ=40 px window.
+//   Step 2 — ORB window match:   per-feature search in γ=40 px window.
 //   Step 3 — PnP pose estimate:  Gauss-Newton on 3D–2D correspondences.
 //   Step 4 — Goal list update:   rebuild via GoalManager on success.
 //
@@ -40,7 +40,7 @@ struct RelocResult {
 class Relocalization {
 public:
   Relocalization(const Phase3Config& cfg,
-                 std::shared_ptr<DBoW2::BriefDatabase> db,
+                 std::shared_ptr<DBoW2::OrbDatabase> db,
                  std::vector<MapKeyframe::Ptr> map_keyframes);
 
   // ── Phase 3 API (Section 3.4) ─────────────────────────────────────────────
@@ -66,7 +66,7 @@ private:
                                    int last_match_idx,
                                    DBoW2::QueryResults& raw_results);
 
-  // ── Step 2: BRIEF window matching ────────────────────────────────────────
+  // ── Step 2: ORB window matching ────────────────────────────────────────
   // For each candidate keyframe, extract live features in γ-radius windows
   // around each map feature projection.  Returns correspondence set.
   std::vector<Correspondence> windowMatch(const cv::Mat& live_image,
@@ -76,22 +76,21 @@ private:
   std::vector<Correspondence> gridFilter(
       const std::vector<Correspondence>& raw_corrs) const;
 
-  // Extract FAST+BRIEF features from a circular ROI in the live image.
+  // Extract ORB features from a circular ROI in the live image.
   std::vector<Feature2D> extractInRegion(const cv::Mat& image,
                                           int cx, int cy, int radius);
 
-  // Compute DBoW descriptor for a set of BRIEF descriptors.
+  // Compute DBoW descriptor for a set of ORB descriptors.
   cv::Mat computeBowDescriptor(const std::vector<Feature2D>& features);
 
   Phase3Config                           cfg_;
-  std::shared_ptr<DBoW2::BriefDatabase>  db_;
+  std::shared_ptr<DBoW2::OrbDatabase>    db_;
   std::vector<MapKeyframe::Ptr>          map_keyframes_;
 
   PnPSolver                              pnp_solver_;
   GoalManager                            goal_manager_;
 
-  cv::Ptr<cv::FastFeatureDetector>       fast_detector_;
-  cv::Ptr<cv::xfeatures2d::BriefDescriptorExtractor> brief_extractor_;
+  cv::Ptr<cv::ORB>                       orb_extractor_;
 
   int last_match_idx_ = -1;   // for temporal adjacency rejection
 };

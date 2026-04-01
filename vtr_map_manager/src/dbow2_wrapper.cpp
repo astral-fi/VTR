@@ -12,7 +12,7 @@
 
 // DBoW2 headers — available after building DBoW2 from source
 #include <DBoW2/DBoW2.h>          // OrbVocabulary, OrbDatabase
-#include <DBoW2/FBrief.h>         // BRIEF feature functions
+#include <DBoW2/FORB.h>           // ORB feature functions
 #include <DBoW2/QueryResults.h>   // QueryResults, Result
 
 namespace vtr {
@@ -33,13 +33,13 @@ struct DBoW2Wrapper::Impl {
 // ---------------------------------------------------------------------------
 // Helper: convert Nx32 CV_8U Mat to DBoW2 feature format (vector of bitsets)
 // ---------------------------------------------------------------------------
-static std::vector<DBoW2::FBrief::TDescriptor>
+static std::vector<DBoW2::FORB::TDescriptor>
 matToDescriptors(const cv::Mat& mat) {
-    std::vector<DBoW2::FBrief::TDescriptor> descs;
+    std::vector<DBoW2::FORB::TDescriptor> descs;
     descs.reserve(mat.rows);
     for (int i = 0; i < mat.rows; ++i) {
-        // DBoW2 BRIEF uses bitset<256> internally via boost or std
-        // FBrief::TDescriptor is a cv::Mat row (32 bytes)
+        // DBoW2 ORB uses cv::Mat row internally
+        // FORB::TDescriptor is a cv::Mat row (32 bytes)
         descs.push_back(mat.row(i));
     }
     return descs;

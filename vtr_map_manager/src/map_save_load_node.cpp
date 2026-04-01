@@ -194,7 +194,7 @@ int main(int argc, char** argv) {
     pnh.param<std::string>("op",               op,         "load");
     pnh.param<std::string>("map_path",         map_path,   "/tmp/vtr_map");
     pnh.param<std::string>("vocabulary_path",  vocab_path,
-                           "/opt/vtr/vocab/brief_k10L6.voc.gz");
+                           "/opt/vtr/vocab/ORBvoc.txt");
 
     auto graph = std::make_shared<vtr::MapGraph>();
     auto dbow  = std::make_shared<vtr::DBoW2Wrapper>(vocab_path);

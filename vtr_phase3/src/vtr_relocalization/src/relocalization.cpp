@@ -14,16 +14,15 @@
 #include <ros/ros.h>
 #include <opencv2/imgproc.hpp>
 
-// DBoW2 BRIEF database types
-using BriefDatabase = DBoW2::TemplatedDatabase<DBoW2::FBrief::TDescriptor,
-                                               DBoW2::FBrief>;
+// DBoW2 ORB database types
+using OrbDatabase = DBoW2::OrbDatabase;
 
 namespace vtr {
 
 // ─────────────────────────────────────────────────────────────────────────────
 Relocalization::Relocalization(
     const Phase3Config& cfg,
-    std::shared_ptr<DBoW2::BriefDatabase> db,
+    std::shared_ptr<DBoW2::OrbDatabase> db,
     std::vector<MapKeyframe::Ptr> map_keyframes)
   : cfg_(cfg)
   , db_(std::move(db))
@@ -31,13 +30,8 @@ Relocalization::Relocalization(
   , pnp_solver_(cfg)
   , goal_manager_(cfg)
 {
-  // FAST detector — threshold 20, non-maximum suppression on
-  fast_detector_ = cv::FastFeatureDetector::create(20, true);
-
-  // BRIEF extractor — 32 bytes = 256 bits, use_orientation=false (classic BRIEF)
-  // Note: cv::xfeatures2d is in opencv_contrib.  For vanilla OpenCV 3 on
-  // Melodic, link against opencv3-contrib (see README install instructions).
-  brief_extractor_ = cv::xfeatures2d::BriefDescriptorExtractor::create(32);
+  // ORB extractor
+  orb_extractor_ = cv::ORB::create();
 
   ROS_INFO("[Reloc] Initialized with %zu map keyframes.",
            map_keyframes_.size());
@@ -56,36 +50,27 @@ RelocResult Relocalization::relocalize(const cv::Mat& live_image)
     gray = live_image;
   }
 
-  // ── Extract FAST+BRIEF for the whole live frame ───────────────────────────
+  // ── Extract ORB features for the whole live frame ───────────────────────────
   std::vector<cv::KeyPoint> kps;
-  fast_detector_->detect(gray, kps);
+  cv::Mat live_descs;
+  orb_extractor_->detectAndCompute(gray, cv::noArray(), kps, live_descs);
 
   if (kps.empty()) {
     ROS_WARN("[Reloc] No features detected in live frame.");
     return result;
   }
 
-  cv::Mat live_descs;
-  brief_extractor_->compute(gray, kps, live_descs);
-
   // ── Step 1: Coarse DBoW2 retrieval ───────────────────────────────────────
   // Convert live descriptors to DBoW2 format
-  std::vector<DBoW2::FBrief::TDescriptor> brief_vec;
+  std::vector<DBoW2::FORB::TDescriptor> orb_vec;
+  orb_vec.reserve(live_descs.rows);
   for (int i = 0; i < live_descs.rows; ++i) {
-    boost::dynamic_bitset<> bits;
-    // FBrief::TDescriptor is a boost::dynamic_bitset<uint64_t>
-    // Reconstruct from the CV_8U descriptor row (32 bytes = 256 bits)
-    const uchar* row = live_descs.ptr<uchar>(i);
-    bits.resize(256);
-    for (int b = 0; b < 256; ++b) {
-      if (row[b / 8] & (1 << (b % 8))) bits.set(b);
-    }
-    brief_vec.push_back(bits);
+    orb_vec.push_back(live_descs.row(i));
   }
 
   DBoW2::QueryResults bow_results;
   // Query top-10 candidates from DBoW2
-  db_->query(brief_vec, bow_results, 10);
+  db_->query(orb_vec, bow_results, 10);
 
   std::vector<int> candidates = coarseRetrieval(cv::Mat(), last_match_idx_,
                                                  bow_results);
@@ -194,7 +179,7 @@ Relocalization::windowMatch(const cv::Mat& live_image, const MapKeyframe& kf)
     int cx = static_cast<int>(map_feat.u);
     int cy = static_cast<int>(map_feat.v);
 
-    // Extract FAST+BRIEF features in the search window
+    // Extract ORB features in the search window
     std::vector<Feature2D> live_feats = extractInRegion(live_image, cx, cy,
                                                           cfg_.search_radius);
     if (live_feats.empty()) continue;
@@ -204,7 +189,7 @@ Relocalization::windowMatch(const cv::Mat& live_image, const MapKeyframe& kf)
     int best_idx  = -1;
 
     for (int i = 0; i < static_cast<int>(live_feats.size()); ++i) {
-      // Hamming distance between 32-byte BRIEF descriptors
+      // Hamming distance between 32-byte ORB descriptors
       int dist = static_cast<int>(
           cv::norm(map_feat.descriptor, live_feats[i].descriptor,
                    cv::NORM_HAMMING));
@@ -264,7 +249,7 @@ std::vector<Feature2D>
 Relocalization::extractInRegion(const cv::Mat& image,
                                   int cx, int cy, int radius)
 {
-  // Build a circular ROI mask and detect FAST features within it.
+  // Build a circular ROI mask and detect ORB features within it.
   int x0 = std::max(0,                cx - radius);
   int y0 = std::max(0,                cy - radius);
   int x1 = std::min(image.cols - 1,  cx + radius);
@@ -276,11 +261,9 @@ Relocalization::extractInRegion(const cv::Mat& image,
   cv::Mat  roi_img = image(roi_rect);
 
   std::vector<cv::KeyPoint> kps;
-  fast_detector_->detect(roi_img, kps);
-  if (kps.empty()) return {};
-
   cv::Mat descs;
-  brief_extractor_->compute(roi_img, kps, descs);
+  orb_extractor_->detectAndCompute(roi_img, cv::noArray(), kps, descs);
+  if (kps.empty()) return {};
 
   std::vector<Feature2D> feats;
   feats.reserve(kps.size());

@@ -59,7 +59,7 @@ sudo apt-get install -y \
 echo "    [OK] System libraries installed."
 
 # ------------------------------------------------------------
-# 3. DBoW2 (with BRIEF support)
+# 3. DBoW2
 # ------------------------------------------------------------
 echo ""
 echo "[3/7] Building and installing DBoW2..."
@@ -71,7 +71,7 @@ if [ ! -f "${DBOW2_INSTALL}/lib/libDBoW2.so" ]; then
     mkdir -p "${DBOW2_DIR}"
     cd "${DBOW2_DIR}"
 
-    # Clone the DoRiaN/DBoW2 fork which includes BRIEF support out-of-the-box
+    # Clone DBoW2
     if [ ! -d "DBoW2" ]; then
         git clone https://github.com/dorian3d/DBoW2.git
     fi
@@ -125,33 +125,24 @@ else
 fi
 
 # ------------------------------------------------------------
-# 5. Download the BRIEF DBoW2 Vocabulary
+# 5. Download the ORB DBoW2 Vocabulary
 # ------------------------------------------------------------
 echo ""
-echo "[5/7] Downloading BRIEF vocabulary for DBoW2..."
+echo "[5/7] Downloading ORB vocabulary for DBoW2..."
 
 VOCAB_DIR="/opt/vtr/vocab"
-VOCAB_FILE="${VOCAB_DIR}/brief_k10L6.voc.gz"
+VOCAB_FILE="${VOCAB_DIR}/ORBvoc.txt"
 
 sudo mkdir -p "${VOCAB_DIR}"
 
 if [ ! -f "${VOCAB_FILE}" ]; then
-    # The ORB-SLAM2 vocabulary is BRIEF-based and widely used with DBoW2.
-    # Download from the ORB-SLAM2 repository (same format, DBoW2-compatible).
-    echo "    Downloading BRIEF vocabulary (~48 MB)..."
+    echo "    Downloading ORB vocabulary (~48 MB)..."
     sudo wget -q --show-progress \
-        "https://github.com/dorian3d/DBoW2/raw/master/Vocabulary/brief_k10L6.voc.gz" \
-        -O "${VOCAB_FILE}" || {
-        echo "    Direct download failed. Trying alternative source..."
-        # Fallback: ORB-SLAM2 vocabulary (works with FBrief if re-trained)
-        sudo wget -q --show-progress \
-            "https://github.com/raulmur/ORB_SLAM2/raw/master/Vocabulary/ORBvoc.txt.tar.gz" \
-            -O "/opt/vtr/vocab/ORBvoc.txt.tar.gz"
-        cd /opt/vtr/vocab && sudo tar -xzf ORBvoc.txt.tar.gz
-        echo "    NOTE: Downloaded ORB vocabulary. For best BRIEF results, provide"
-        echo "          brief_k10L6.voc.gz from your DBoW2 vocabulary trainer."
-    }
+        "https://github.com/raulmur/ORB_SLAM2/raw/master/Vocabulary/ORBvoc.txt.tar.gz" \
+        -O "/opt/vtr/vocab/ORBvoc.txt.tar.gz"
+    cd /opt/vtr/vocab && sudo tar -xzf ORBvoc.txt.tar.gz
     echo "    [OK] Vocabulary saved to ${VOCAB_FILE}"
+    sudo rm /opt/vtr/vocab/ORBvoc.txt.tar.gz
 else
     echo "    [SKIP] Vocabulary already present at ${VOCAB_FILE}"
 fi

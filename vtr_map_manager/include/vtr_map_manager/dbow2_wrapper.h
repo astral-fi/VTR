@@ -41,8 +41,8 @@ public:
     // Construction
     // -------------------------------------------------------------------------
 
-    // Load a pre-trained BRIEF vocabulary from disk.
-    // vocabulary_path: path to the .voc.gz file (see install instructions).
+    // Load a pre-trained ORB vocabulary from disk.
+    // vocabulary_path: path to the ORB vocabulary file.
     explicit DBoW2Wrapper(const std::string& vocabulary_path);
     ~DBoW2Wrapper();
 
@@ -58,7 +58,7 @@ public:
     //
     // Parameters:
     //   node_id      -- MapGraph node id for this keyframe
-    //   descriptors  -- Nx32 CV_8U BRIEF descriptor matrix (N features)
+    //   descriptors  -- Nx32 CV_8U ORB descriptor matrix (N features)
     //   graph        -- the MapGraph to write loop edges into
     //   temporal_gap -- reject candidates within this many recent nodes
     //                   (avoids matching adjacent frames; default 30)
@@ -75,7 +75,7 @@ public:
     // Used by Phase 3 as the coarse retrieval step.
     //
     // Parameters:
-    //   descriptors  -- Nx32 CV_8U BRIEF descriptor matrix of live frame
+    //   descriptors  -- Nx32 CV_8U ORB descriptor matrix of live frame
     //   top_n        -- number of candidates to return (default 5)
     //   min_score    -- minimum DBoW score to accept (default 0.012)
     //
@@ -85,7 +85,7 @@ public:
                                           double min_score = 0.012) const;
 
     // -------------------------------------------------------------------------
-    // Compute bow vector for a set of BRIEF descriptors (utility)
+    // Compute bow vector for a set of ORB descriptors (utility)
     // -------------------------------------------------------------------------
     std::vector<BowEntry> computeBowVector(const cv::Mat& descriptors) const;
 

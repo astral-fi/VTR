@@ -5,9 +5,9 @@
 # -----------------------------------------------------------------------
 # DBoW2 / Loop Detection
 # -----------------------------------------------------------------------
-# Path to pre-trained BRIEF vocabulary.
+# Path to pre-trained ORB vocabulary.
 # Download: see README.md -> "Vocabulary" section.
-vocabulary_path: "/opt/vtr/vocab/brief_k10L6.voc.gz"
+vocabulary_path: "/opt/vtr/vocab/ORBvoc.txt"
 
 # DBoW2 score threshold for TEACHING phase loop detection (tau_bow)
 # Paper: section III-B-2.  Guide: tau_bow = 0.015

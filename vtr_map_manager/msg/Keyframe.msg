@@ -10,7 +10,7 @@ int32 keyframe_id
 # Relative SE(3) transform from K_{i-1} to K_i as a 4x4 row-major float64 array
 float64[16] T_rel
 
-# 2D feature pixel coordinates and BRIEF descriptor (256-bit = 32 bytes each)
+# 2D feature pixel coordinates and ORB descriptor (256-bit = 32 bytes each)
 # Packed as (u, v) pairs; descriptor bytes follow in features_descriptors
 float32[]   features_u
 float32[]   features_v

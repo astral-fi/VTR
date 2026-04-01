@@ -3,13 +3,13 @@
      Compatible with ROS Melodic.
 
      Required args:
-       vocabulary_path  — absolute path to DBoW2 BRIEF vocabulary file (.voc.gz)
+       vocabulary_path  — absolute path to DBoW2 ORB vocabulary file (.txt)
        map_path         — absolute path to Phase 2 serialised map file
 -->
 <launch>
 
   <!-- ── Arguments ──────────────────────────────────────────────────────── -->
-  <arg name="vocabulary_path"    default="$(find vtr_relocalization)/config/brief_k10L6.voc.gz"/>
+  <arg name="vocabulary_path"    default="/opt/vtr/vocab/ORBvoc.txt"/>
   <arg name="map_path"           default=""/>
   <arg name="camera_topic"       default="/camera/image_raw"/>
   <arg name="odometry_topic"     default="/vtr/odometry"/>

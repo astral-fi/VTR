@@ -89,11 +89,11 @@ private:
   // ─── Map / vocabulary loading ───────────────────────────────────────────────
   void loadMapAndVocabulary()
   {
-    // Load DBoW2 BRIEF vocabulary
+    // Load DBoW2 ORB vocabulary
     ROS_INFO("[RelocNode] Loading DBoW2 vocabulary from: %s",
              vocabulary_path_.c_str());
-    auto vocab = std::make_shared<DBoW2::BriefVocabulary>(vocabulary_path_);
-    auto db    = std::make_shared<DBoW2::BriefDatabase>(*vocab, false, 0);
+    auto vocab = std::make_shared<DBoW2::OrbVocabulary>(vocabulary_path_);
+    auto db    = std::make_shared<DBoW2::OrbDatabase>(*vocab, false, 0);
 
     // Load map keyframes
     // In a full system, Phase 2 publishes the map over a ROS topic or writes
@@ -120,7 +120,7 @@ private:
   // Phase 2.  Replace with your actual deserialization code.
   std::vector<MapKeyframe::Ptr> loadKeyframesFromFile(
       const std::string& path,
-      std::shared_ptr<DBoW2::BriefDatabase>& db)
+      std::shared_ptr<DBoW2::OrbDatabase>& db)
   {
     (void)path; (void)db;
     ROS_WARN("[RelocNode] loadKeyframesFromFile: stub — integrate Phase 2 serializer.");
@@ -239,7 +239,7 @@ private:
   std::string   vocabulary_path_;
   std::string   map_path_;
 
-  std::shared_ptr<DBoW2::BriefDatabase> db_;
+  std::shared_ptr<DBoW2::OrbDatabase> db_;
   std::unique_ptr<Relocalization>       reloc_;
 
   ros::Subscriber image_sub_;

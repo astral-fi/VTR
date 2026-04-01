@@ -107,7 +107,7 @@ public:
         std::string mode;
         pnh.param<std::string>("mode", mode, "teaching");
         pnh.param<std::string>("vocabulary_path", vocab_path_,
-                               "/opt/vtr/vocab/brief_k10L6.voc.gz");
+                               "/opt/vtr/vocab/ORBvoc.txt");
         pnh.param<std::string>("map_save_path", map_path_,
                                "/tmp/vtr_map");
         pnh.param<double>("dbow_cluster_threshold",
