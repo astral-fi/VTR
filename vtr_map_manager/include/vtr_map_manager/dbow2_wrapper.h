@@ -22,8 +22,8 @@
 // Forward-declare DBoW2 types to keep headers clean.
 // The .cpp includes DBoW2 directly.
 namespace DBoW2 {
-    class BriefVocabulary;
-    class BriefDatabase;
+    class OrbVocabulary;
+    class OrbDatabase;
 }
 
 namespace vtr {

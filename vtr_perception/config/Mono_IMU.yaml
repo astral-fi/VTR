@@ -1,0 +1,77 @@
+%YAML:1.0
+
+#--------------------------------------------------------------------------------------------
+# VTR Phase 1 — ORB-SLAM3 Monocular-Inertial config for JetRacer IMX219 + MPU9250
+# Calibrate intrinsics with Kalibr before using these values.
+# CRITICAL: measure IMU-camera time offset (Td) with kalibr_calibrate_imu_camera
+#--------------------------------------------------------------------------------------------
+
+Camera.type: "PinHole"
+
+# IMX219 at 640x480 — replace with your Kalibr output
+Camera.fx: 458.654
+Camera.fy: 457.296
+Camera.cx: 367.215
+Camera.cy: 248.375
+
+Camera.k1: -0.28340811
+Camera.k2:  0.07395907
+Camera.p1:  0.00019359
+Camera.p2:  1.76187114e-05
+
+Camera.width:  640
+Camera.height: 480
+
+# Frames per second (set to actual publish rate, not max sensor rate)
+Camera.fps: 20
+
+# Colour order: 0=RGB, 1=BGR — mono8 has no colour
+Camera.RGB: 1
+
+#--------------------------------------------------------------------------------------------
+# IMU — MPU9250 noise parameters (replace with Allan variance calibration values)
+#--------------------------------------------------------------------------------------------
+
+IMU.NoiseGyro:   1.7e-4    # rad/s/sqrt(Hz)
+IMU.NoiseAcc:    2.0e-3    # m/s^2/sqrt(Hz)
+IMU.GyroWalk:    1.9393e-5
+IMU.AccWalk:     3.0000e-3
+IMU.Frequency:   200       # Hz — match your actual IMU publish rate
+
+# Camera-IMU extrinsics — MUST calibrate with Kalibr
+# T_cam_imu: transforms IMU frame to camera frame
+IMU.T_b_c1: !!opencv-matrix
+   rows: 4
+   cols: 4
+   dt: f
+   data: [ 1.0,  0.0,  0.0,  0.0,
+           0.0,  1.0,  0.0,  0.0,
+           0.0,  0.0,  1.0,  0.0,
+           0.0,  0.0,  0.0,  1.0 ]  # PLACEHOLDER — replace with Kalibr result
+
+# IMU-Camera time offset in seconds (positive = IMU leads camera)
+# Measure with: kalibr_calibrate_imu_camera --bag your_bag.bag ...
+IMU.Td: 0.0   # PLACEHOLDER — critical for monocular-inertial accuracy
+
+#--------------------------------------------------------------------------------------------
+# ORB feature parameters
+#--------------------------------------------------------------------------------------------
+
+ORBextractor.nFeatures:   500    # Reduced from default 1000 for Jetson Nano CPU budget
+ORBextractor.scaleFactor: 1.2
+ORBextractor.nLevels:     8
+ORBextractor.iniThFAST:   20
+ORBextractor.minThFAST:   7
+
+#--------------------------------------------------------------------------------------------
+# Viewer — DISABLED for headless Jetson deployment
+#--------------------------------------------------------------------------------------------
+Viewer.UseViewer: 0
+
+#--------------------------------------------------------------------------------------------
+# VTR-specific: disable ORB-SLAM3 global loop closure.
+# The VTR map layer (Phase 2) owns loop correction at graph level.
+# ORB-SLAM3's internal loop closure would corrupt relative pose chain.
+#--------------------------------------------------------------------------------------------
+System.ActivateLocalMapping: 1
+System.LoopClosing: 0       # MUST be 0 for VTR — do not enable

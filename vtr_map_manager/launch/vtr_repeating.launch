@@ -5,7 +5,7 @@
 
 <launch>
   <arg name="vocabulary_path"
-       default="/opt/vtr/vocab/brief_k10L6.voc.gz" />
+       default="~/ORB_SLAM3/Vocabulary/ORBvoc.txt" />
 
   <arg name="map_dir"
        default="$(env HOME)/vtr_maps/current" />

@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <package format="2">
-  <name>vtr_phase1_perception</name>
+  <name>vtr_perception</name>
   <version>0.1.0</version>
   <description>VTR Phase 1: Visual Odometry and Perception Engine</description>
   <maintainer email="you@example.com">Your Name</maintainer>

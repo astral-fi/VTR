@@ -11,7 +11,7 @@
 #include <ros/ros.h>
 
 // DBoW2 headers — available after building DBoW2 from source
-#include <DBoW2/DBoW2.h>          // BriefVocabulary, BriefDatabase
+#include <DBoW2/DBoW2.h>          // OrbVocabulary, OrbDatabase
 #include <DBoW2/FBrief.h>         // BRIEF feature functions
 #include <DBoW2/QueryResults.h>   // QueryResults, Result
 
@@ -21,8 +21,8 @@ namespace vtr {
 // Pimpl struct
 // ---------------------------------------------------------------------------
 struct DBoW2Wrapper::Impl {
-    std::unique_ptr<DBoW2::BriefVocabulary> vocab;
-    std::unique_ptr<DBoW2::BriefDatabase>   db;
+    std::unique_ptr<DBoW2::OrbVocabulary> vocab;
+    std::unique_ptr<DBoW2::OrbDatabase>   db;
 
     // node_id -> DBoW2 entry id mapping
     std::unordered_map<int, DBoW2::EntryId> node_to_entry;
@@ -53,7 +53,7 @@ DBoW2Wrapper::DBoW2Wrapper(const std::string& vocabulary_path)
 
     ROS_INFO_STREAM("[DBoW2Wrapper] Loading vocabulary from: " << vocabulary_path);
 
-    impl_->vocab = std::make_unique<DBoW2::BriefVocabulary>(vocabulary_path);
+    impl_->vocab = std::make_unique<DBoW2::OrbVocabulary>(vocabulary_path);
 
     if (impl_->vocab->empty()) {
         ROS_ERROR_STREAM("[DBoW2Wrapper] Failed to load vocabulary from "
@@ -65,7 +65,7 @@ DBoW2Wrapper::DBoW2Wrapper(const std::string& vocabulary_path)
 
     // Create an empty database backed by the loaded vocabulary.
     // direct_index_levels=4 enables fast geometric checks inside DBoW2.
-    impl_->db = std::make_unique<DBoW2::BriefDatabase>(
+    impl_->db = std::make_unique<DBoW2::OrbDatabase>(
         *impl_->vocab, /*use_di=*/true, /*di_levels=*/4);
 
     vocab_loaded_ = true;
@@ -184,7 +184,7 @@ std::vector<BowEntry> DBoW2Wrapper::computeBowVector(
 // ---------------------------------------------------------------------------
 void DBoW2Wrapper::clearDatabase() {
     if (!vocab_loaded_) return;
-    impl_->db = std::make_unique<DBoW2::BriefDatabase>(
+    impl_->db = std::make_unique<DBoW2::OrbDatabase>(
         *impl_->vocab, true, 4);
     impl_->node_to_entry.clear();
     impl_->entry_to_node.clear();

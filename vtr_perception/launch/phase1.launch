@@ -1,0 +1,14 @@
+<!-- vtr_phase1.launch -->
+<launch>
+  <node pkg="vtr_perception" type="phase1_node" name="vtr_phase1" output="screen">
+    <param name="orb_vocab"       value="$(env HOME)/ORB_SLAM3/Vocabulary/ORBvoc.txt"/>
+    <param name="orb_settings"    value="$(find vtr_phase1)/config/jetracer_mono_imu.yaml"/>
+    <param name="keyframe_every"  value="5"/>
+    <param name="kf_trans_thresh" value="0.3"/>
+    <param name="kf_rot_thresh"   value="0.1745"/>
+  </node>
+
+  <!-- Remap JetRacer topics to expected names -->
+  <remap from="/camera/image_raw" to="/camera/image_raw"/>
+  <remap from="/imu/data"         to="/imu"/>
+</launch>
