@@ -28,8 +28,7 @@
   <depend>image_transport</depend>
   <depend>message_filters</depend>
 
-  <!-- Custom messages (Phase 1 & 2 outputs) -->
-  <depend>vtr_msgs</depend>
+
 
   <!-- OpenCV 3.x (ships with ROS Melodic) -->
   <depend>opencv3</depend>

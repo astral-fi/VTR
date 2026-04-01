@@ -18,7 +18,6 @@ find_package(catkin REQUIRED COMPONENTS
   cv_bridge
   image_transport
   message_filters
-  vtr_msgs
 )
 
 # ─── OpenCV (ROS Melodic ships with 3.2 / 3.4) ──────────────────────────────
@@ -40,7 +39,7 @@ catkin_package(
   CATKIN_DEPENDS
     roscpp std_msgs geometry_msgs sensor_msgs nav_msgs
     tf2 tf2_ros tf2_geometry_msgs cv_bridge image_transport
-    message_filters vtr_msgs
+    message_filters
   DEPENDS
     OpenCV Eigen3 DBoW2
 )
