@@ -345,7 +345,7 @@ private:
 
 int main(int argc, char** argv)
 {
-    ros::init(argc, argv, "phase1_node");
+    ros::init(argc, argv, "Phase1Node");
     ros::NodeHandle nh;
     ros::NodeHandle nh_priv("~");
 
