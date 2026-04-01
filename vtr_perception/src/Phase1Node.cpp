@@ -1,21 +1,15 @@
 #include "vtr_perception/include/IPhase1.h"
 #include "vtr_perception/include/Keyframe.h"
-
-// ORB-SLAM3 headers
 #include <System.h>
 #include <KeyFrame.h>
 #include <MapPoint.h>
 #include <ORBextractor.h>
-
-// ROS Melodic
 #include <ros/ros.h>
 #include <sensor_msgs/Image.h>
 #include <sensor_msgs/Imu.h>
 #include <cv_bridge/cv_bridge.h>
 #include <message_filters/subscriber.h>
 #include <message_filters/sync_policies/approximate_time.h>
-
-// DBoW2 (ORB vocabulary — same vocab ORB-SLAM3 uses internally)
 #include <memory>
 #include <mutex>
 #include <Eigen/Core>
