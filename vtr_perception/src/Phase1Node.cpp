@@ -16,9 +16,12 @@
 #include <message_filters/sync_policies/approximate_time.h>
 
 // DBoW2 (ORB vocabulary — same vocab ORB-SLAM3 uses internally)
-#include <DBoW2/DBoW2.h>
-
+#include <memory>
 #include <mutex>
+#include <Eigen/Core>
+#include <Eigen/Geometry>
+#include <nav_msgs/Odometry.h>
+
 #include <deque>
 #include <atomic>
 
@@ -64,6 +67,9 @@ public:
         // --- Camera subscriber (single — monocular) ---
         img_sub_ = nh.subscribe("/camera/image_raw", 30,
                                 &Phase1Node::imageCallback, this);
+
+        // --- Odometry Publisher (for Phase 4) ---
+        odom_pub_ = nh.advertise<nav_msgs::Odometry>("/vtr/odometry", 10);
 
         ROS_INFO("[Phase1] ORB-SLAM3 adapter ready.");
     }
@@ -163,11 +169,30 @@ private:
         if (slam_->GetTrackingState() != ORB_SLAM3::Tracking::OK)
             return;
 
-        // Update odometry pose (used by Phase 4 between relocalization hits)
+        // Update odometry pose
+        Eigen::Matrix4d T_odom;
         {
             std::lock_guard<std::mutex> lk(pose_mutex_);
             current_odom_pose_ = sophusToEigen(T_cam_world);
+            T_odom = current_odom_pose_;
         }
+
+        // Publish high-frequency V-SLAM Odometry
+        nav_msgs::Odometry odom_msg;
+        odom_msg.header.stamp = msg->header.stamp;
+        odom_msg.header.frame_id = "map";
+        odom_msg.child_frame_id = "camera_link";
+        
+        Eigen::Matrix3d R = T_odom.block<3,3>(0,0);
+        Eigen::Quaterniond q(R);
+        odom_msg.pose.pose.position.x = T_odom(0,3);
+        odom_msg.pose.pose.position.y = T_odom(1,3);
+        odom_msg.pose.pose.position.z = T_odom(2,3);
+        odom_msg.pose.pose.orientation.w = q.w();
+        odom_msg.pose.pose.orientation.x = q.x();
+        odom_msg.pose.pose.orientation.y = q.y();
+        odom_msg.pose.pose.orientation.z = q.z();
+        odom_pub_.publish(odom_msg);
 
         frame_counter_++;
 
@@ -288,6 +313,7 @@ private:
 
     ros::Subscriber img_sub_;
     ros::Subscriber imu_sub_;
+    ros::Publisher  odom_pub_;
 
     // IMU ring buffer
     mutable std::mutex          imu_mutex_;

@@ -196,13 +196,13 @@ void MotionController::controlStep(const ros::TimerEvent& /*event*/)
     status.feasible_trajectory_count = feasible_count;
 
     if (result.best_index >= 0) {
-      double omega = arcs[result.best_index].omega;
+      double steering_angle = arcs[result.best_index].steering_angle;
       double v     = config_.traj_params.linear_velocity;
-      cmd = buildCmd(v, omega);
+      cmd = buildCmd(v, steering_angle);
       status.mode                     = vtr_motion_planner::MotionPlannerStatus::MODE_TRAJECTORY;
       status.selected_trajectory_index = result.best_index;
-      ROS_DEBUG("[MotionController] Traj %d selected: ω=%.3f score=%.4f",
-                result.best_index, omega, result.best_score);
+      ROS_DEBUG("[MotionController] Traj %d selected: steering=%.3f score=%.4f",
+                result.best_index, steering_angle, result.best_score);
     } else {
       // Safety override: all trajectories blocked → rotate in place
       cmd = buildRotate();

@@ -7,7 +7,7 @@
 # -----------------------------------------------------------------------
 # Path to pre-trained ORB vocabulary.
 # Download: see README.md -> "Vocabulary" section.
-vocabulary_path: "/opt/vtr/vocab/ORBvoc.txt"
+vocabulary_path: "/home/astral-fi/ORB_SLAM3/Vocabulary/ORBvoc.txt"
 
 # DBoW2 score threshold for TEACHING phase loop detection (tau_bow)
 # Paper: section III-B-2.  Guide: tau_bow = 0.015

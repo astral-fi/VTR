@@ -83,6 +83,14 @@ RelocResult Relocalization::relocalize(const cv::Mat& live_image)
   for (int idx : candidates) {
     const MapKeyframe& kf = *map_keyframes_[idx];
 
+    // Check 3D availability before attempting PnP (Monocular Guard)
+    if (kf.features_3d.size() < 12) {
+        ROS_WARN_THROTTLE(1.0,
+            "[Phase3] Map keyframe %d has only %zu 3D pts — skipping PnP",
+            kf.id, kf.features_3d.size());
+        continue;
+    }
+
     // Window matching in live frame
     std::vector<Correspondence> corrs = windowMatch(gray, kf);
     corrs = gridFilter(corrs);

@@ -125,26 +125,19 @@ else
 fi
 
 # ------------------------------------------------------------
-# 5. Download the ORB DBoW2 Vocabulary
+# 5. ORB DBoW2 Vocabulary
 # ------------------------------------------------------------
 echo ""
-echo "[5/7] Downloading ORB vocabulary for DBoW2..."
+echo "[5/7] Verifying ORB vocabulary for DBoW2..."
 
-VOCAB_DIR="/opt/vtr/vocab"
-VOCAB_FILE="${VOCAB_DIR}/ORBvoc.txt"
+VOCAB_FILE="${HOME}/ORB_SLAM3/Vocabulary/ORBvoc.txt"
 
-sudo mkdir -p "${VOCAB_DIR}"
-
-if [ ! -f "${VOCAB_FILE}" ]; then
-    echo "    Downloading ORB vocabulary (~48 MB)..."
-    sudo wget -q --show-progress \
-        "https://github.com/raulmur/ORB_SLAM2/raw/master/Vocabulary/ORBvoc.txt.tar.gz" \
-        -O "/opt/vtr/vocab/ORBvoc.txt.tar.gz"
-    cd /opt/vtr/vocab && sudo tar -xzf ORBvoc.txt.tar.gz
-    echo "    [OK] Vocabulary saved to ${VOCAB_FILE}"
-    sudo rm /opt/vtr/vocab/ORBvoc.txt.tar.gz
+if [ -f "${VOCAB_FILE}" ]; then
+    echo "    [OK] Found vocabulary at ${VOCAB_FILE}"
 else
-    echo "    [SKIP] Vocabulary already present at ${VOCAB_FILE}"
+    echo "    [WARNING] Vocabulary not found at ${VOCAB_FILE}"
+    echo "    Please ensure ORB-SLAM3 is installed in your home directory,"
+    echo "    or update the launch files to point to its installed location."
 fi
 
 # ------------------------------------------------------------

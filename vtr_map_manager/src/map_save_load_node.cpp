@@ -66,7 +66,7 @@ void serialize(Archive& ar, vtr::KeyframeNode& n, unsigned int) {
     ar & n.has_skip;
     ar & n.T_loop & n.loop_node_id;
     ar & n.prev_node_id & n.next_node_id;
-    ar & n.features_2d & n.features_3d & n.bow_vector;
+    ar & n.features_2d & n.features_3d & n.feat3d_idx & n.bow_vector;
 }
 }} // namespace boost::serialization
 
@@ -194,7 +194,7 @@ int main(int argc, char** argv) {
     pnh.param<std::string>("op",               op,         "load");
     pnh.param<std::string>("map_path",         map_path,   "/tmp/vtr_map");
     pnh.param<std::string>("vocabulary_path",  vocab_path,
-                           "/opt/vtr/vocab/ORBvoc.txt");
+                           "/home/astral-fi/ORB_SLAM3/Vocabulary/ORBvoc.txt");
 
     auto graph = std::make_shared<vtr::MapGraph>();
     auto dbow  = std::make_shared<vtr::DBoW2Wrapper>(vocab_path);

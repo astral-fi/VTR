@@ -78,11 +78,20 @@ static KeyframeNode::Ptr keyframeMsgToNode(
     }
 
     // 3D features
-    node->features_3d.resize(N);
-    for (int i = 0; i < N; ++i) {
+    int M = static_cast<int>(msg->features_x.size());
+    node->features_3d.resize(M);
+    for (int i = 0; i < M; ++i) {
         node->features_3d[i].x = msg->features_x[i];
         node->features_3d[i].y = msg->features_y[i];
         node->features_3d[i].z = msg->features_z[i];
+    }
+
+    if (!msg->feat3d_idx.empty()) {
+        node->feat3d_idx.assign(msg->feat3d_idx.begin(), msg->feat3d_idx.end());
+    } else {
+        // Fallback for older sequences: 1-to-1 mapping maxed at N
+        node->feat3d_idx.resize(M);
+        for (int i = 0; i < M; ++i) node->feat3d_idx[i] = i;
     }
 
     // BoW vector
@@ -107,7 +116,7 @@ public:
         std::string mode;
         pnh.param<std::string>("mode", mode, "teaching");
         pnh.param<std::string>("vocabulary_path", vocab_path_,
-                               "/opt/vtr/vocab/ORBvoc.txt");
+                               "/home/astral-fi/ORB_SLAM3/Vocabulary/ORBvoc.txt");
         pnh.param<std::string>("map_save_path", map_path_,
                                "/tmp/vtr_map");
         pnh.param<double>("dbow_cluster_threshold",

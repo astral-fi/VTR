@@ -9,7 +9,7 @@
 <launch>
 
   <!-- ── Arguments ──────────────────────────────────────────────────────── -->
-  <arg name="vocabulary_path"    default="/opt/vtr/vocab/ORBvoc.txt"/>
+  <arg name="vocabulary_path"    default="$(env HOME)/ORB_SLAM3/Vocabulary/ORBvoc.txt"/>
   <arg name="map_path"           default=""/>
   <arg name="camera_topic"       default="/camera/image_raw"/>
   <arg name="odometry_topic"     default="/vtr/odometry"/>

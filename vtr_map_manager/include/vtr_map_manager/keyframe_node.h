@@ -54,6 +54,7 @@ struct ExpansionFrame {
     Eigen::Matrix4d T_node_to_frame;  // T from node coords to this frame
     std::vector<Feature2D> features_2d;
     std::vector<Feature3D> features_3d;
+    std::vector<int>       feat3d_idx;
     std::vector<BowEntry>  bow_vector;
     cv::Mat  image;             // grayscale
     double   timestamp;
@@ -93,6 +94,9 @@ struct KeyframeNode {
 
     // P_bar: 3D positions in this node's camera frame (parallel to features_2d)
     std::vector<Feature3D> features_3d;
+
+    // Index map mapping features_3d to their corresponding features_2d index
+    std::vector<int> feat3d_idx;
 
     // DBoW2 bag-of-words vector for fast retrieval
     std::vector<BowEntry>  bow_vector;

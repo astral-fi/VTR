@@ -21,6 +21,9 @@ float32[]   features_x
 float32[]   features_y
 float32[]   features_z
 
+# Index map: maps each 3D point to its corresponding 2D feature / descriptor index
+int32[]     feat3d_idx
+
 # DBoW2 bag-of-words vector: word_id and word_weight pairs
 uint32[]    bow_word_ids
 float64[]   bow_word_weights

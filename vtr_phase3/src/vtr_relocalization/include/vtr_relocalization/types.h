@@ -101,7 +101,7 @@ struct Phase3Config {
 
   // --- ORB window matching ---
   int    search_radius  = 40;     // γ: pixel search window radius
-  int    hamming_thresh = 60;     // max Hamming distance for ORB match
+  int    hamming_thresh = 50;     // max Hamming distance for ORB match
   int    grid_rows      = 6;      // image grid rows for spatial filter
   int    grid_cols      = 8;      // image grid cols for spatial filter
   int    max_per_cell   = 3;      // max matches per grid cell

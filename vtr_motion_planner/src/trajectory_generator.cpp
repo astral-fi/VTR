@@ -34,27 +34,33 @@ void TrajectoryGenerator::precompute()
   const double T      = params_.horizon_sec;
   const int    steps  = static_cast<int>(std::round(T / dt));
 
-  // Uniformly sample K angular velocities in [omega_min, omega_max]
+  const double L = 0.165;  // JetRacer wheelbase in meters (Ackermann kinematic model)
+
+  // Uniformly sample K steering angles in approx limits [-0.35, +0.35] rad
+  double delta_min = -0.35;
+  double delta_max =  0.35;
+
   for (int k = 0; k < K; ++k) {
-    double omega;
+    double delta;
     if (K == 1) {
-      omega = 0.0;
+      delta = 0.0;
     } else {
-      omega = params_.omega_min +
+      delta = delta_min + 
               static_cast<double>(k) / static_cast<double>(K - 1) *
-              (params_.omega_max - params_.omega_min);
+              (delta_max - delta_min);
     }
 
     TrajectoryArc arc;
-    arc.omega = omega;
+    arc.steering_angle = delta;
     arc.pts.reserve(steps);
 
-    // Integrate unicycle from (0,0,0) in robot frame
+    // Integrate Ackermann from (0,0,0) in robot frame
     double x = 0.0, y = 0.0, theta = 0.0;
     for (int s = 0; s < steps; ++s) {
+      double dtheta = (v / L) * std::tan(delta) * dt;
       x     += v * std::cos(theta) * dt;
       y     += v * std::sin(theta) * dt;
-      theta += omega * dt;
+      theta += dtheta;
 
       geometry_msgs::Point pt;
       pt.x = x;

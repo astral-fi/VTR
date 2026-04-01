@@ -15,7 +15,7 @@ namespace vtr_motion_planner {
 
 /// A single pre-cached arc candidate.
 struct TrajectoryArc {
-  double omega;                          ///< Angular velocity (rad/s)
+  double steering_angle;                 ///< Ackermann steering angle (rad)
   std::vector<geometry_msgs::Point> pts; ///< Waypoints in robot frame
 };
 

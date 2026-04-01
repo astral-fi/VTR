@@ -23,7 +23,7 @@
        doc="Path to the saved map directory (must contain map.bin)." />
 
   <arg name="vocabulary_path"
-       default="~/ORB_SLAM3/Vocabulary/ORBvoc.txt" />
+       default="$(env HOME)/ORB_SLAM3/Vocabulary/ORBvoc.txt" />
 
   <arg name="image_width"   default="640" />
   <arg name="image_height"  default="480" />

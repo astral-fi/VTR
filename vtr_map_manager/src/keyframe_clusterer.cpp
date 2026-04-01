@@ -72,8 +72,19 @@ Eigen::Matrix4d KeyframeClusterer::accumulatePose(
 void KeyframeClusterer::mergeFeatures(KeyframeNode::Ptr dst,
                                        KeyframeNode::Ptr src,
                                        const Eigen::Matrix4d& T_dst_from_src) {
+    if (src->features_3d.size() < 6) {
+        // Monocular sparsity guard: append all 2D features for DBoW2 matching
+        // but DO NOT corrupt 3D map with unstable sparse geometries.
+        for (const auto& f2 : src->features_2d) {
+            dst->features_2d.push_back(f2);
+        }
+        return;
+    }
+
     Eigen::Matrix3d R = T_dst_from_src.block<3,3>(0,0);
     Eigen::Vector3d t = T_dst_from_src.block<3,1>(0,3);
+
+    int base_2d_idx = static_cast<int>(dst->features_2d.size());
 
     for (size_t i = 0; i < src->features_3d.size(); ++i) {
         // Transform 3D point into dst's frame
@@ -91,9 +102,12 @@ void KeyframeClusterer::mergeFeatures(KeyframeNode::Ptr dst,
         f3.z = static_cast<float>(p_dst.z());
         dst->features_3d.push_back(f3);
 
-        // Keep the 2D feature and descriptor from the source
-        // (useful for additional matching diversity)
-        dst->features_2d.push_back(src->features_2d[i]);
+        // Map back to corresponding 2D index
+        int orig_2d = src->feat3d_idx.empty() ? i : src->feat3d_idx[i];
+        dst->features_2d.push_back(src->features_2d[orig_2d]);
+
+        // Record its brand new location in dst's 2D array
+        dst->feat3d_idx.push_back(base_2d_idx++);
     }
 }
 
